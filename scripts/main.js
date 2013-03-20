@@ -5,51 +5,30 @@ console.log("Main Script Opened");
 document.onload = gameInit();
 
 function gameInit() {
-	
 	console.log("Main Script Initialized");
 
-	camera.width = getWindowSize().width;
-	camera.height = getWindowSize().height;
-
-	// We draw a gray background with the context (after clearing the canvas), but the canvas stores it.
+	// Adjust the canvas size to match the window
 	if( ctx == null ) {
 		canvas = document.getElementById('canvas');
 		ctx = canvas.getContext('2d');
-	}
-	
+	}	
+	camera.width = getWindowSize().width;
+	camera.height = getWindowSize().height;
 	ctx.canvas.width = camera.width;
 	ctx.canvas.height = camera.height;
-	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-	ctx.fillStyle = "#333333";
-	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 	
-	// OAM initialization
-	oam = new OAM();
-
 	// Background Gob: Graphic Object
-	//var bgGob = oam.newGob('gfx/Shelly Tompkins - Into the Woods.jpg');
-	//bgGob.src(0, 0, 800, 600);
-
-	bgGfxId = oam.newGfxId();
-	oam.png(bgGfxId, 'gfx/Shelly Tompkins - Into the Woods.jpg');
-	oam.pos(bgGfxId, 0, 0);
-	oam.mod(bgGfxId, 'srcW', 800);
-	oam.mod(bgGfxId, 'srcH', 600);
-	oam.resize(bgGfxId, camera.width, camera.height);
+	var bgGob = new Gob('gfx/Shelly Tompkins - Into the Woods.jpg');
+	bgGob.origin('topleft');
+	bgGob.imgSize(800, 600);
 
 	// Players and their sprite sheets
 	sean = new Player();
-	oam.png(sean.gfxId, 'gfx/Sean - 200px Sheet.png');
-	oam.mod(sean.gfxId, 'spriteW', 200);
-	oam.mod(sean.gfxId, 'spriteH', 200);
-	oam.gfx(sean.gfxId, 'idle');
+	sean.gob.png('gfx/Sean - 200px Sheet.png')
 	sean.control = PLAYER_1;
 
 	john = new Player();
-	oam.png(john.gfxId, 'gfx/John - 200px Sheet.png');
-	oam.mod(john.gfxId, 'spriteW', 200);
-	oam.mod(john.gfxId, 'spriteH', 200);
-	oam.gfx(john.gfxId, 'idle');
+	john.gob.png( 'gfx/John - 200px Sheet.png' );
 	john.x = 560;
 	
 	// Now to setup the main game loop to run every 50milliseconds, and clear the old one
@@ -65,8 +44,8 @@ function mainLoop() {
 	sean.cycle();
 	john.cycle();
 
-	camera.x = sean.x;
-	camera.y = sean.y;
+	camera.x = sean.x - camera.width / 2;
+	camera.y = sean.y - camera.height / 2;
 
 	oam.draw();
 }

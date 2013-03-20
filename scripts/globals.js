@@ -10,14 +10,11 @@ var timer = null;
 var ctx = null;
 var canvas = null;
 
-// Object Attribute Manager
-var oam = null;
-
 // keyboard input
 var key = new Array(512);
 
-// background image
-var bgGfxId = null;
+// background Graphic Object
+var bgGob = null;
 
 // which main menu the user is located in
 var menu = null;

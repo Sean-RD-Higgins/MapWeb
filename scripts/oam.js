@@ -4,6 +4,7 @@ This "class" imitates the concept of the Object Attiribute Manager used to contr
 */
 // @author: Sean Higgins
 
+var oam = new OAM();
 
 // The "Class" head function.
 function OAM() {
@@ -74,7 +75,8 @@ function OAM() {
 				(this.m[i]).s['gfx'], 
 				(this.m[i]).s['srcX'], (this.m[i]).s['srcY'], 
 				(this.m[i]).s['srcW'], (this.m[i]).s['srcH'], 
-				(this.m[i]).s['destX'], (this.m[i]).s['destY'], 
+				(this.m[i]).s['destX'] - (this.m[i]).s['destW'] * (this.m[i]).s['offsetX'], 
+				(this.m[i]).s['destY'] - (this.m[i]).s['destH'] * (this.m[i]).s['offsetY'], 
 				(this.m[i]).s['destW'], (this.m[i]).s['destH'] );
 		}
 	}
@@ -112,13 +114,9 @@ function OAM() {
 	}
 
 	// Change the direction of the gfx face
-	this.face = function (id, dir) {
-		if( dir == "Right" ) {
-			this.m[id].s['xscale'] = 1;
-		}
-		else {
-			this.m[id].s['xscale'] = -1;
-		}
+	this.scale = function (id, skewX, skewY ) {
+		this.m[id].s['xscale'] = skewX;
+		this.m[id].s['yscale'] = skewY;
 		this.m[id].s['srcW'] = this.s['spriteW'] * this.s['xscale'];
 		this.m[id].s['srcH'] = this.s['spriteH'] * this.s['yscale'];
 	}
@@ -148,7 +146,7 @@ function OAM() {
 
 }
 
-// A single instance of a graphic node.
+// A single instance of a graphic node used only by the oam.
 function oamNode() {
 	this.s = {}; // Create a new dictionary/associative array.
 	this.s['gfx'] = new Image(); // HTML5 defined class
@@ -165,6 +163,10 @@ function oamNode() {
 	this.s['destW'] = 100;
 	this.s['destH'] = 100;
 
+	// The origin of the image when drawn on the screen in relation to it's width and height.
+	this.s['offsetX'] = 0.5; 
+	this.s['offsetY'] = 0.5;
+
 	// The vertical length of a single frame from a whole image.  This is not mandatory unless using predetermined graphic names.
 	this.s['spriteH'] = 100; 
 	this.s['spriteW'] = 100;
@@ -175,4 +177,74 @@ function oamNode() {
 
 	// The depth/layer at which the image will be drawn.  The Higher the number, the closer to the screen.
 	this.s['z'] = 0; 
+}
+
+// A single instance of a graphic object, used as a wrapper.
+function Gob( filename ) {
+
+	this.gfxId = oam.newGfxId();
+	if( filename != null)
+		oam.png(this.gfxId, filename);
+
+	// Change the filename of the image to be used.
+	this.png = function ( newFilename ) {
+		oam.png(this.gfxId, newFilename);
+	}
+
+	// Change the size the source frame
+	this.srcSize = function ( w, h ) {
+		oam.mod(this.gfxId, 'srcW', w );
+		oam.mod(this.gfxId, 'srcH', h );
+	}
+
+	// Change the size of the sprite frame
+	this.spriteSize = function ( size ) {
+		oam.mod(this.gfxId, 'spriteH', size );
+		oam.mod(this.gfxId, 'spriteW', size );
+	}
+
+	// Change the destination size of the image
+	this.resize = function ( w, h ) {
+		oam.resize(this.gfxId, w, h );
+	}
+
+	// Place the position origin of the image relative to the width/height
+	this.origin = function( place ) {
+		switch( place ) {
+			case 'top':
+				oam.mod(this.gfxId, 'offsetX', 0.5);
+				oam.mod(this.gfxId, 'offsetY', 0);
+			break;
+			case 'topleft':
+				oam.mod(this.gfxId, 'offsetX', 0);
+				oam.mod(this.gfxId, 'offsetY', 0);
+			break;
+			case 'center':
+				oam.mod(this.gfxId, 'offsetX', 0.5);
+				oam.mod(this.gfxId, 'offsetY', 0.5);
+			break;
+			case 'bottom':
+				oam.mod(this.gfxId, 'offsetX', 0.5);
+				oam.mod(this.gfxId, 'offsetY', 1);
+			break;
+		}
+	}
+
+	// Alter the sprite graphic
+	this.gfx = function( gfx ) {
+		oam.gfx(this.gfxId, gfx);
+	}
+
+	// Change the gob's position
+	this.pos = function( x,  y ) {
+		oam.mod(this.gfxId, 'destX', x);
+		oam.mod(this.gfxId, 'destY', y);
+	}
+
+	// Change both the source and destination width/height
+	this.imgSize = function ( w , h ) {
+		this.srcSize(w, h);
+		this.resize(w, h);
+	}
+
 }
