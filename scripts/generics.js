@@ -20,3 +20,10 @@ function getWindowSize() {
 	}
 	return {'width': winW, 'height': winH};
 }
+
+window.onresize = function () {
+	camera.width = getWindowSize().width;
+	camera.height = getWindowSize().height;
+	ctx.canvas.width = camera.width;
+	ctx.canvas.height = camera.height;
+}
