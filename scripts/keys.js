@@ -21,15 +21,17 @@ document.onkeyup=function(e) {
 // @author: http://backtothecode.blogspot.com/2009/10/javascript-touch-and-gesture-events.html
 // Touch Support
 document.addEventListener('touchstart', function(event) {
+    touch = event.touches[0];
     console.log("Begin Touch x:" + touch.pageX + ", y:" + touch.pageY);
 }, false);
 
 document.addEventListener('touchmove', function(event) {
     event.preventDefault();
-    var touch = event.touches[0];
+    touch = event.touches[0];
     console.log("Touch x:" + touch.pageX + ", y:" + touch.pageY);
 }, false);
 
-document.addEventListener('touchemd', function(event) {
-    console.log("End Touch x:" + touch.pageX + ", y:" + touch.pageY);
+document.addEventListener('touchend', function(event) {
+	console.log("End Touch x:" + touch.pageX + ", y:" + touch.pageY);
+	touch = {pageX: -1, pageY: -1};
 }, false);

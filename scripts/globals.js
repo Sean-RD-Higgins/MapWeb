@@ -6,6 +6,11 @@ var john = null;
 // our timer ID
 var timer = null;
 
+var touch = {
+	pageX: -1,
+	pageY: -1
+};
+
 // Canvas tag and it's context.
 var ctx = null;
 var canvas = null;
