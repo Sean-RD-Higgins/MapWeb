@@ -71,26 +71,38 @@ function OAM() {
 		
 		//  The array is sorted by which depth it is to be drawn in ascending order.  Therefore, we can jsut draw from index 0 to the max length.
 		for( i = 0; i < this.m.length; i += 1) {
-			ctx.drawImage( 
-				(this.m[i]).s['gfx'], 
-				(this.m[i]).s['srcX'], (this.m[i]).s['srcY'], 
-				(this.m[i]).s['srcW'], (this.m[i]).s['srcH'], 
-				(this.m[i]).s['destX'] - (this.m[i]).s['destW'] * (this.m[i]).s['offsetX'], 
-				(this.m[i]).s['destY'] - (this.m[i]).s['destH'] * (this.m[i]).s['offsetY'], 
-				(this.m[i]).s['destW'], (this.m[i]).s['destH'] );
+
+			if ( (this.m[i]).s['dir'] == 'left' ) { 
+				console.log(i + ":" + (this.m[i]).s['dir']);
+				ctx.scale(-1, 1);
+				ctx.drawImage( 
+					(this.m[i]).s['gfx'], 
+					(this.m[i]).s['srcX'], (this.m[i]).s['srcY'], 
+					(this.m[i]).s['srcW'], (this.m[i]).s['srcH'], 
+					- (this.m[i]).s['destX'] - (this.m[i]).s['destW'] * (this.m[i]).s['offsetX'], 
+					(this.m[i]).s['destY'] - (this.m[i]).s['destH'] * (this.m[i]).s['offsetY'], 
+					(this.m[i]).s['destW'], (this.m[i]).s['destH'] 
+				);
+				ctx.scale(1, 1);
+			}
+			else {
+				ctx.scale(1, 1);
+				ctx.drawImage( 
+					(this.m[i]).s['gfx'], 
+					(this.m[i]).s['srcX'], (this.m[i]).s['srcY'], 
+					(this.m[i]).s['srcW'], (this.m[i]).s['srcH'], 
+					(this.m[i]).s['destX'] - (this.m[i]).s['destW'] * (this.m[i]).s['offsetX'], 
+					(this.m[i]).s['destY'] - (this.m[i]).s['destH'] * (this.m[i]).s['offsetY'], 
+					(this.m[i]).s['destW'], (this.m[i]).s['destH'] 
+				);
+			}
 		}
 	}
 
 	// Change the current graphic based on a spritesheet's predetermined names for a frame.
 	this.gfx = function (id, gfxName) {
 		// The predetermined gfx name arrangement.
-		var gfxArray = [
-			['up1', 'up2', 'up3', 'up4', 'up5'],
-			['right1', 'right2', 'right3', 'right4', 'right5'],
-			['down1', 'down2', 'down3', 'down4', 'down5'],
-			['left1', 'left2' , 'left3', 'left4', 'left5'],
-			['alt1', 'alt2' , 'alt3', 'alt4', 'alt5']
-		];
+		var gfxArray = this.m[id].s['gfxArray'];
 
 		// Search through the 2D array for the name of the frame.
 		this.x = 0;
@@ -98,8 +110,8 @@ function OAM() {
 		for( i = 0 ; i < gfxArray.length; i += 1 ) {
 			for( j = 0 ; j < gfxArray[i].length ; j += 1 ) {
 				if( gfxName == gfxArray[i][j] ) {
-					this.x = i;
-					this.y = j;
+					this.x = j;
+					this.y = i;
 				}
 			}
 		}
@@ -177,6 +189,17 @@ function oamNode() {
 
 	// The depth/layer at which the image will be drawn.  The Higher the number, the closer to the screen.
 	this.s['z'] = 0; 
+
+	// The assumed array with the graphic choices
+	this.s['gfxArray'] = [
+		['up1', 'up2', 'up3', 'up4', 'up5'],
+		['right1', 'right2', 'right3', 'right4', 'right5'],
+		['down1', 'down2', 'down3', 'down4', 'down5'],
+		['left1', 'left2' , 'left3', 'left4', 'left5'],
+		['alt1', 'alt2' , 'alt3', 'alt4', 'alt5']
+	];
+
+	this.s['dir'] = "right"; 
 }
 
 // A single instance of a graphic object, used as a wrapper.
@@ -247,4 +270,11 @@ function Gob( filename ) {
 		this.resize(w, h);
 	}
 
+	this.gfxArray = function ( gfxArray ) {
+		oam.mod(this.gfxId, 'gfxArray', gfxArray);
+	}
+
+	this.dir = function ( direction ) {
+		oam.mod(this.gfxId, 'dir', direction);
+	}
 }

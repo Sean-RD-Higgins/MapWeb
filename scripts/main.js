@@ -29,7 +29,7 @@ function gameInit() {
 
 	john = new Player();
 	john.gob.png( 'gfx/John - 200px Sheet.png' );
-	john.x = 560;
+	john.x = 56;
 	
 	// Now to setup the main game loop to run every 50milliseconds, and clear the old one
 	if( timer != null ) {
