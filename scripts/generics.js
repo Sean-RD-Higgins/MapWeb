@@ -1,5 +1,13 @@
 // @author: Sean Higgins
 
+function preventBehavior(e) {
+    e.preventDefault(); 
+};
+
+document.addEventListener("touchstart", preventBehavior, false);
+document.addEventListener("touchmove", preventBehavior, false);
+document.addEventListener("touchend", preventBehavior, false);
+
 // Returns an Associative Array containing 'width' and 'height' of the window.
 function getWindowSize() {
 	//@author: http://www.javascripter.net/faq/browserw.htm
