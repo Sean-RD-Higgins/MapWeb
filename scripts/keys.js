@@ -18,6 +18,14 @@ document.onkeyup=function(e) {
 	}
 }
 
+function preventBehavior(e) {
+    e.preventDefault(); 
+};
+
+document.addEventListener("touchstart", preventBehavior, false);
+document.addEventListener("touchmove", preventBehavior, false);
+document.addEventListener("touchend", preventBehavior, false);
+
 // @author: http://backtothecode.blogspot.com/2009/10/javascript-touch-and-gesture-events.html
 // Touch Support
 document.addEventListener('touchstart', function(event) {
