@@ -2,6 +2,8 @@
 // Players
 var sean = null;
 var john = null;
+var dan = null;
+var ad = null;
 
 // our timer ID
 var timer = null;

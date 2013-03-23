@@ -27,9 +27,20 @@ function gameInit() {
 	sean.gob.png('gfx/Sean - 200px Sheet.png')
 	sean.control = PLAYER_1;
 
+	ad = new Player();
+	ad.gob.png( 'gfx/John - 200px Sheet.png' );
+	ad.x = 56;
+	ad.y -= 25;
+	
+	dan = new Player();
+	dan.gob.png( 'gfx/John - 200px Sheet.png' );
+	dan.x = 56;
+	dan.y -= 35;
+	
 	john = new Player();
 	john.gob.png( 'gfx/John - 200px Sheet.png' );
 	john.x = 56;
+	john.y -= 45;
 	
 	// Now to setup the main game loop to run every 50milliseconds, and clear the old one
 	if( timer != null ) {
@@ -43,6 +54,8 @@ function gameInit() {
 function mainLoop() {
 	sean.cycle();
 	john.cycle();
+	dan.cycle();
+	ad.cycle();
 
 	camera.x = sean.x - camera.width / 2;
 	camera.y = sean.y - camera.height / 2;

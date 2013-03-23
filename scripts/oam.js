@@ -72,29 +72,28 @@ function OAM() {
 		//  The array is sorted by which depth it is to be drawn in ascending order.  Therefore, we can jsut draw from index 0 to the max length.
 		for( i = 0; i < this.m.length; i += 1) {
 
-			if ( (this.m[i]).s['dir'] == 'left' ) { 
-				console.log(i + ":" + (this.m[i]).s['dir']);
-				ctx.scale(-1, 1);
+			if ( this.m[i].s['dir'] == 'right' ) { 
 				ctx.drawImage( 
-					(this.m[i]).s['gfx'], 
-					(this.m[i]).s['srcX'], (this.m[i]).s['srcY'], 
-					(this.m[i]).s['srcW'], (this.m[i]).s['srcH'], 
-					- (this.m[i]).s['destX'] - (this.m[i]).s['destW'] * (this.m[i]).s['offsetX'], 
-					(this.m[i]).s['destY'] - (this.m[i]).s['destH'] * (this.m[i]).s['offsetY'], 
-					(this.m[i]).s['destW'], (this.m[i]).s['destH'] 
+					this.m[i].s['gfx'], 
+					this.m[i].s['srcX'], this.m[i].s['srcY'], 
+					this.m[i].s['srcW'], this.m[i].s['srcH'], 
+					this.m[i].s['destX'] - this.m[i].s['destW'] * this.m[i].s['offsetX'], 
+					this.m[i].s['destY'] - this.m[i].s['destH'] * this.m[i].s['offsetY'], 
+					this.m[i].s['destW'], this.m[i].s['destH'] 
 				);
-				ctx.scale(1, 1);
 			}
 			else {
-				ctx.scale(1, 1);
+				ctx.save();
+				ctx.scale(-1, 1);
 				ctx.drawImage( 
-					(this.m[i]).s['gfx'], 
-					(this.m[i]).s['srcX'], (this.m[i]).s['srcY'], 
-					(this.m[i]).s['srcW'], (this.m[i]).s['srcH'], 
-					(this.m[i]).s['destX'] - (this.m[i]).s['destW'] * (this.m[i]).s['offsetX'], 
-					(this.m[i]).s['destY'] - (this.m[i]).s['destH'] * (this.m[i]).s['offsetY'], 
-					(this.m[i]).s['destW'], (this.m[i]).s['destH'] 
+					this.m[i].s['gfx'], 
+					this.m[i].s['srcX'], this.m[i].s['srcY'], 
+					this.m[i].s['srcW'], this.m[i].s['srcH'], 
+					- this.m[i].s['destX'] - this.m[i].s['destW'] * this.m[i].s['offsetX'], 
+					this.m[i].s['destY'] - this.m[i].s['destH'] * this.m[i].s['offsetY'], 
+					this.m[i].s['destW'], this.m[i].s['destH'] 
 				);
+				ctx.restore();
 			}
 		}
 	}

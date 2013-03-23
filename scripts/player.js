@@ -95,6 +95,7 @@ function Player() {
 		// TODO: make this... different
 		else {
 			this.action = "run";
+			this.gob.dir( this.dir );
 			this.gob.gfx('run' + this.max(3) );
 			//this.x += Math.floor(Math.random() * 2 - 1) * this.spd;
 			//this.y += Math.floor(Math.random() * 2 - 1) * this.spd;
