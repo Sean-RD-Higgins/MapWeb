@@ -63,6 +63,14 @@ function isTouchY( condition , value ) {
 				return false;
 			}
 		break;
+		case '>':
+			for( var i = 0; i < touch.length ; i += 1 ){
+				if( touch[i].pageY > value ) {
+					return true;
+				}
+				return false;
+			}
+		break;
 	}
 	return false;
 }
