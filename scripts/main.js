@@ -23,24 +23,29 @@ function gameInit() {
 	bgGob.imgSize(800, 600);
 
 	// Players and their sprite sheets
-	sean = new Player();
+	players = [];
+	var sean = new Player();
 	sean.gob.png('gfx/Sean - 200px Sheet.png')
 	sean.control = PLAYER_1;
+	players.push( sean );
 
-	ad = new Player();
+	var ad = new Player();
 	ad.gob.png( 'gfx/John - 200px Sheet.png' );
 	ad.x = 56;
 	ad.y -= 25;
+	players.push( ad );
 	
-	dan = new Player();
+	var dan = new Player();
 	dan.gob.png( 'gfx/John - 200px Sheet.png' );
 	dan.x = 56;
 	dan.y -= 35;
+	players.push( dan );
 	
-	john = new Player();
+	var john = new Player();
 	john.gob.png( 'gfx/John - 200px Sheet.png' );
 	john.x = 56;
 	john.y -= 45;
+	players.push( john );
 	
 	// Now to setup the main game loop to run every 50milliseconds, and clear the old one
 	if( timer != null ) {
@@ -52,13 +57,13 @@ function gameInit() {
 
 // This is the main game loop
 function mainLoop() {
-	sean.cycle();
-	john.cycle();
-	dan.cycle();
-	ad.cycle();
+	// Go through all player cycles
+	for( var i = 0; i < players.length; i += 1 ) {
+		players[i].cycle();
+	}
 
-	camera.x = sean.x - camera.width / 2;
-	camera.y = sean.y - camera.height / 2;
+	camera.x = players[0].x - camera.width / 2;
+	camera.y = players[0].y - camera.height / 2;
 
 	oam.draw();
 }
