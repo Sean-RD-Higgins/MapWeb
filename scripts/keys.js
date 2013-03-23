@@ -29,17 +29,40 @@ document.addEventListener("touchend", preventBehavior, false);
 // @author: http://backtothecode.blogspot.com/2009/10/javascript-touch-and-gesture-events.html
 // Touch Support
 document.addEventListener('touchstart', function(event) {
-    touch = event.touches[0];
-    console.log("Begin Touch x:" + touch.pageX + ", y:" + touch.pageY);
+    touch = event.touches;
+    for( var i = 0; i < touch.length ; i += 1 ){
+    	console.log("Start " + i + " Touch x:" + touch[i].pageX + ", y:" + touch[i].pageY);
+    }
 }, false);
 
 document.addEventListener('touchmove', function(event) {
     event.preventDefault();
-    touch = event.touches[0];
-    console.log("Touch x:" + touch.pageX + ", y:" + touch.pageY);
+    touch = event.touches;
+    for( var i = 0; i < touch.length ; i += 1 ){
+    	console.log("Move " + i + " Touch x:" + touch[i].pageX + ", y:" + touch[i].pageY);
+    }
 }, false);
 
 document.addEventListener('touchend', function(event) {
-	console.log("End Touch x:" + touch.pageX + ", y:" + touch.pageY);
+    for( var i = 0; i < touch.length ; i += 1 ){
+    	console.log("End " + i + " Touch x:" + touch[i].pageX + ", y:" + touch[i].pageY);
+    }
 	touch = {pageX: -1, pageY: -1};
 }, false);
+
+function isTouchY( condition , value ) {
+	if(touch.pageX == -1) {
+		return false;
+	}
+	switch( condition ){
+		case '<':
+			for( var i = 0; i < touch.length ; i += 1 ){
+				if( touch[i].pageY < value ) {
+					return true;
+				}
+				return false;
+			}
+		break;
+	}
+	return false;
+}

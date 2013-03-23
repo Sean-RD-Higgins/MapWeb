@@ -4,10 +4,13 @@ This "class" imitates the concept of the Object Attiribute Manager used to contr
 */
 // @author: Sean Higgins
 
+console.log("OAM Script Opened");
+
 var oam = new OAM();
 
 // The "Class" head function.
 function OAM() {
+	console.log("OAM Initialized");
 
 	// Assume the context of the canvas.
 
@@ -155,6 +158,7 @@ function OAM() {
 		this.m[id].s['srcH'] = h;
 	}
 
+	console.log("OAM Script Completed");
 }
 
 // A single instance of a graphic node used only by the oam.

@@ -65,24 +65,24 @@ function Player() {
 				this.action = "idle";
 			}
 			else {
-				if( key[87] || touch.pageY < camera.height * 1/3 && touch.pageX != -1 ) {
+				if( key[87] || isTouchY('<', camera.height * 1/3) ) {
 					this.y -= this.spd;
 					this.action = "run";
 					this.gob.gfx('run' + this.max(3) );
 				}
-				else if( key[83] || touch.pageY > camera.height * 2/3 && touch.pageX != -1 ) {
+				else if( key[83] || isTouchY('>', camera.height * 2/3) ) {
 					this.y += this.spd;
 					this.action = "run";
 					this.gob.gfx('run' + this.max(3) );
 				}
-				if( key[68] || touch.pageX > camera.width * 2/3 && touch.pageX != -1 ) {
+				if( key[68] || touch[0].pageX > camera.width * 2/3 && touch[0].pageX != -1 ) {
 					this.x += this.spd;
 					this.action = "run";
 					this.dir = "right";
 					this.gob.dir( this.dir );
 					this.gob.gfx('run' + this.max(3) );
 				}
-				else if( key[65]  || touch.pageX < camera.width * 1/3 && touch.pageX != -1 ) {
+				else if( key[65]  || touch[0].pageX < camera.width * 1/3 && touch[0].pageX != -1 ) {
 					this.x -= this.spd;
 					this.action = "run";
 					this.dir = "left";
