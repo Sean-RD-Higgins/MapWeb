@@ -34,7 +34,7 @@ function Player() {
 
 	// Gets the current gfx index from the maximum number
 	this.max = function( maxFrames ) {
-		return "" + ( 1 + Math.floor( (this.gfxTimer / 2) % maxFrames ) );
+		return "" + ( 1 + Math.floor( (this.gfxTimer / 3) % maxFrames ) );
 	}
 
 	// This is the player's main loop cycle.  It's run during every cycle (50milliseconds)
