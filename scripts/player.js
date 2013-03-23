@@ -75,14 +75,14 @@ function Player() {
 					this.action = "run";
 					this.gob.gfx('run' + this.max(3) );
 				}
-				if( key[68] || touch[0].pageX > camera.width * 2/3 && touch[0].pageX != -1 ) {
+				if( key[68] || isTouchX('>', camera.width * 2/3) ) {
 					this.x += this.spd;
 					this.action = "run";
 					this.dir = "right";
 					this.gob.dir( this.dir );
 					this.gob.gfx('run' + this.max(3) );
 				}
-				else if( key[65]  || touch[0].pageX < camera.width * 1/3 && touch[0].pageX != -1 ) {
+				else if( key[65]  || isTouchX('<', camera.width * 1/3) ) {
 					this.x -= this.spd;
 					this.action = "run";
 					this.dir = "left";

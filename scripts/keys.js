@@ -50,14 +50,22 @@ document.addEventListener('touchend', function(event) {
 	touch = {pageX: -1, pageY: -1};
 }, false);
 
+
+function isTouchX( condition , value ) {
+	return isTouch('pageX', condition, value );
+}
 function isTouchY( condition , value ) {
+	return isTouch('pageY', condition, value );
+}
+
+function isTouch( prevalue, condition , value ) {
 	if(touch.pageX == -1) {
 		return false;
 	}
 	switch( condition ){
 		case '<':
 			for( var i = 0; i < touch.length ; i += 1 ){
-				if( touch[i].pageY < value ) {
+				if( (touch[i])[prevalue] < value ) {
 					return true;
 				}
 				return false;
@@ -65,7 +73,7 @@ function isTouchY( condition , value ) {
 		break;
 		case '>':
 			for( var i = 0; i < touch.length ; i += 1 ){
-				if( touch[i].pageY > value ) {
+				if( (touch[i])[prevalue] > value ) {
 					return true;
 				}
 				return false;
