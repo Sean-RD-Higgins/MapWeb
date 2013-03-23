@@ -51,7 +51,7 @@ function gameInit() {
 	if( timer != null ) {
 		clearInterval(timer);
 	}
-	timer = setInterval( "mainLoop()", 30 );
+	timer = setInterval( "mainLoop()", 100 );
 	console.log("Main Script Completed");
 }
 
