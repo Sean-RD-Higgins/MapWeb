@@ -61,36 +61,36 @@ function Player() {
 		if(this.control != AI) {
 			// 87 in ASCII is the 'W' on a keyboard, 83:'S', 68:'D', 65:'A'
 			// TODO: This should be exchanged with a more dynamic method so users can change their controls
-			if( ! (key[87] || key[83] || key[68] || key[65] ) ) {
+			if( ! (key[87] || key[83] || key[68] || key[65] || touch.pageX != -1) ) {
 				this.action = "idle";
 			}
 			else {
-					if( key[87] || touch.pageY < camera.height / 2 ) {
-						this.y -= this.spd;
-						this.action = "run";
-						this.gob.gfx('run' + this.max(3) );
-					}
-					else if( key[83] || touch.pageY > camera.height / 2  ) {
-						this.y += this.spd;
-						this.action = "run";
-						this.gob.gfx('run' + this.max(3) );
-					}
-					if( key[68] || touch.pageX > camera.width / 2  ) {
-						this.x += this.spd;
-						this.action = "run";
-						this.dir = "right";
-						this.gob.dir( this.dir );
-						this.gob.gfx('run' + this.max(3) );
-					}
-					else if( key[65]  || touch.pageX < camera.width / 2) {
-						this.x -= this.spd;
-						this.action = "run";
-						this.dir = "left";
-						this.gob.dir( this.dir );
-						this.gob.gfx('run' + this.max(3) );
-					}
+				if( key[87] || touch.pageY < camera.height * 1/4 && touch.pageX != -1 ) {
+					this.y -= this.spd;
+					this.action = "run";
+					this.gob.gfx('run' + this.max(3) );
+				}
+				else if( key[83] || touch.pageY > camera.height * 3/4 && touch.pageX != -1 ) {
+					this.y += this.spd;
+					this.action = "run";
+					this.gob.gfx('run' + this.max(3) );
+				}
+				if( key[68] || touch.pageX > camera.width * 3/4 && touch.pageX != -1 ) {
+					this.x += this.spd;
+					this.action = "run";
+					this.dir = "right";
+					this.gob.dir( this.dir );
+					this.gob.gfx('run' + this.max(3) );
+				}
+				else if( key[65]  || touch.pageX < camera.width * 1/4 && touch.pageX != -1 ) {
+					this.x -= this.spd;
+					this.action = "run";
+					this.dir = "left";
+					this.gob.dir( this.dir );
+					this.gob.gfx('run' + this.max(3) );
 				}
 			}
+		}
 		// otherwise; RUN AROUND SPAZTICALLY
 		// TODO: make this... different
 		else {
