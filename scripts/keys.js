@@ -66,18 +66,19 @@ function isTouch( prevalue, condition , value ) {
 		case '<':
 			for( var i = 0; i < touch.length ; i += 1 ){
 				if( (touch[i])[prevalue] < value ) {
+					
 					return true;
 				}
-				return false;
 			}
+			return false;
 		break;
 		case '>':
 			for( var i = 0; i < touch.length ; i += 1 ){
 				if( (touch[i])[prevalue] > value ) {
 					return true;
 				}
-				return false;
 			}
+			return false;
 		break;
 	}
 	return false;
