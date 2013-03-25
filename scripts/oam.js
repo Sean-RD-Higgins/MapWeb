@@ -75,26 +75,53 @@ function OAM() {
 		//  The array is sorted by which depth it is to be drawn in ascending order.  Therefore, we can jsut draw from index 0 to the max length.
 		for( i = 0; i < this.m.length; i += 1) {
 
-			if ( this.m[i].s['dir'] == 'right' ) { 
+			// I simply hate having to write long names for huge functions....
+			// This is programming after all.  We are supposed to make source easier for the author.
+			var s = this.m[i].s;
+
+			if( s.dock != 'none' ) {
+				s.offsetX = 0.5;
+				s.offsetY = 0.5;
+				s.destX = camera.x + camera.width / 2;
+				s.destY = camera.y + camera.height / 2;
+				if( s.dock.indexOf('top') !== -1 ) {
+					s.destY = camera.y;
+					s.offsetY = 0;
+				}
+				else if( s.dock.indexOf('bottom') !== -1 ) {
+					s.destY = camera.y + camera.height;
+					s.offsetY = 1;
+				}
+				if( s.dock.indexOf('left') !== -1 ) {
+					s.destX = camera.x;
+					s.offsetX = 0;
+				}
+				else if( s.dock.indexOf('right') !== -1 ) {
+					s.destX = camera.x + camera.width;
+					s.offsetX = 1;
+				}
+			}
+
+			if ( s.dir == 'right' ) { 
 				ctx.drawImage( 
-					this.m[i].s['gfx'], 
-					this.m[i].s['srcX'], this.m[i].s['srcY'], 
-					this.m[i].s['srcW'], this.m[i].s['srcH'], 
-					this.m[i].s['destX'] - this.m[i].s['destW'] * this.m[i].s['offsetX'], 
-					this.m[i].s['destY'] - this.m[i].s['destH'] * this.m[i].s['offsetY'], 
-					this.m[i].s['destW'], this.m[i].s['destH'] 
+					s.gfx, 
+					s.srcX, s.srcY, 
+					s.srcW, s.srcH, 
+					s.destX - s.destW * s.offsetX, 
+					s.destY - s.destH * s.offsetY, 
+					s.destW * s.xscale , s.destH * s.yscale
 				);
 			}
 			else {
 				ctx.save();
 				ctx.scale(-1, 1);
 				ctx.drawImage( 
-					this.m[i].s['gfx'], 
-					this.m[i].s['srcX'], this.m[i].s['srcY'], 
-					this.m[i].s['srcW'], this.m[i].s['srcH'], 
-					- this.m[i].s['destX'] - this.m[i].s['destW'] * this.m[i].s['offsetX'], 
-					this.m[i].s['destY'] - this.m[i].s['destH'] * this.m[i].s['offsetY'], 
-					this.m[i].s['destW'], this.m[i].s['destH'] 
+					s.gfx, 
+					s.srcX, s.srcY, 
+					s.srcW, s.srcH, 
+					- s.destX - s.destW * s.offsetX, 
+					s.destY - s.destH * s.offsetY, 
+					s.destW * s.xscale , s.destH * s.yscale
 				);
 				ctx.restore();
 			}
@@ -125,14 +152,6 @@ function OAM() {
 		this.m[id].s['srcH'] = this.m[id].s['spriteH'];
 		this.m[id].s['destW'] = this.m[id].s['srcW'];
 		this.m[id].s['destH'] = this.m[id].s['srcH'];
-	}
-
-	// Change the direction of the gfx face
-	this.scale = function (id, skewX, skewY ) {
-		this.m[id].s['xscale'] = skewX;
-		this.m[id].s['yscale'] = skewY;
-		this.m[id].s['srcW'] = this.s['spriteW'] * this.s['xscale'];
-		this.m[id].s['srcH'] = this.s['spriteH'] * this.s['yscale'];
 	}
 
 	// Source sold separately
@@ -203,6 +222,9 @@ function oamNode() {
 	];
 
 	this.s['dir'] = "right"; 
+
+	this.s['dock'] = "none"; 
+
 }
 
 // A single instance of a graphic object, used as a wrapper.
@@ -280,4 +302,9 @@ function Gob( filename ) {
 	this.dir = function ( direction ) {
 		oam.mod(this.gfxId, 'dir', direction);
 	}
+
+	this.dock = function ( place ) {
+		oam.mod(this.gfxId, 'dock', place);
+	}
+
 }
