@@ -30,6 +30,7 @@ document.addEventListener("touchend", preventBehavior, false);
 // Touch Support
 document.addEventListener('touchstart', function(event) {
     touch = event.touches;
+    starttouch = event.touches;
 }, false);
 
 document.addEventListener('touchmove', function(event) {
@@ -39,32 +40,41 @@ document.addEventListener('touchmove', function(event) {
 
 document.addEventListener('touchend', function(event) {
 	touch = {pageX: -1, pageY: -1};
+	starttouch = touch;
 }, false);
 
 
-function isTouchX( condition , value ) {
-	return isTouch('pageX', condition, value );
+function isStartTouchX( condition , value ) {
+	return isTouch('pageX', condition, value, starttouch );
 }
-function isTouchY( condition , value ) {
-	return isTouch('pageY', condition, value );
+function isStartTouchY( condition , value ) {
+	return isTouch('pageY', condition, value, starttouch );
 }
 
-function isTouch( prevalue, condition , value ) {
-	if(touch.pageX == -1) {
+function isTouchX( condition , value ) {
+	return isTouch('pageX', condition, value, touch );
+}
+function isTouchY( condition , value ) {
+	return isTouch('pageY', condition, value, touch );
+}
+
+function isTouch( prevalue, condition, value, touchchoice ) {
+	
+	if(touchchoice.pageX == -1) {
 		return false;
 	}
 	switch( condition ){
 		case '<':
-			for( var i = 0; i < touch.length ; i += 1 ){
-				if( (touch[i])[prevalue] < value ) {
+			for( var i = 0; i < touchchoice.length ; i += 1 ){
+				if( (touchchoice[i])[prevalue] < value ) {
 					return true;
 				}
 			}
 			return false;
 		break;
 		case '>':
-			for( var i = 0; i < touch.length ; i += 1 ){
-				if( (touch[i])[prevalue] > value ) {
+			for( var i = 0; i < touchchoice.length ; i += 1 ){
+				if( (touchchoice[i])[prevalue] > value ) {
 					return true;
 				}
 			}

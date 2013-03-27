@@ -79,51 +79,59 @@ function OAM() {
 			// This is programming after all.  We are supposed to make source easier for the author.
 			var s = this.m[i].s;
 
-			if( s.dock != 'none' ) {
-				s.offsetX = 0.5;
-				s.offsetY = 0.5;
-				s.destX = camera.x + camera.width / 2;
-				s.destY = camera.y + camera.height / 2;
-				if( s.dock.indexOf('top') !== -1 ) {
-					s.destY = camera.y;
-					s.offsetY = 0;
-				}
-				else if( s.dock.indexOf('bottom') !== -1 ) {
-					s.destY = camera.y + camera.height;
-					s.offsetY = 1;
-				}
-				if( s.dock.indexOf('left') !== -1 ) {
-					s.destX = camera.x;
-					s.offsetX = 0;
-				}
-				else if( s.dock.indexOf('right') !== -1 ) {
-					s.destX = camera.x + camera.width;
-					s.offsetX = 1;
-				}
-			}
+			// Do not waste cycles on drawing hidden objects
+			if( s.hide == "show" ){
 
-			if ( s.dir == 'right' ) { 
-				ctx.drawImage( 
-					s.gfx, 
-					s.srcX, s.srcY, 
-					s.srcW, s.srcH, 
-					s.destX - s.destW * s.offsetX, 
-					s.destY - s.destH * s.offsetY, 
-					s.destW * s.xscale , s.destH * s.yscale
-				);
-			}
-			else {
-				ctx.save();
-				ctx.scale(-1, 1);
-				ctx.drawImage( 
-					s.gfx, 
-					s.srcX, s.srcY, 
-					s.srcW, s.srcH, 
-					- s.destX - s.destW * s.offsetX, 
-					s.destY - s.destH * s.offsetY, 
-					s.destW * s.xscale , s.destH * s.yscale
-				);
-				ctx.restore();
+				// If the graphic is docked, give it special conditions
+				if( s.dock != 'none' ) {
+
+					s.offsetX = 0.5;
+					s.offsetY = 0.5;
+					s.destX = camera.x + camera.width / 2;
+					s.destY = camera.y + camera.height / 2;
+					if( s.dock.indexOf('top') !== -1 ) {
+						s.destY = camera.y;
+						s.offsetY = 0;
+					}
+					else if( s.dock.indexOf('bottom') !== -1 ) {
+						s.destY = camera.y + camera.height;
+						s.offsetY = 1;
+					}
+					if( s.dock.indexOf('left') !== -1 ) {
+						s.destX = camera.x;
+						s.offsetX = 0;
+					}
+					else if( s.dock.indexOf('right') !== -1 ) {
+						s.destX = camera.x + camera.width;
+						s.offsetX = 1;
+					}
+				}
+
+				// IF the graphic wishes to be reversed, perform a coordinate swap to display the image in reverse
+				if ( s.dir == 'right' ) { 
+					ctx.drawImage( 
+						s.gfx, 
+						s.srcX, s.srcY, 
+						s.srcW, s.srcH, 
+						s.destX - s.destW * s.offsetX, 
+						s.destY - s.destH * s.offsetY, 
+						s.destW * s.xscale , s.destH * s.yscale
+					);
+				}
+				else {
+					// To Revert the scale inline, simply save the context and revert it when done.
+					ctx.save();
+					ctx.scale(-1, 1);
+					ctx.drawImage( 
+						s.gfx, 
+						s.srcX, s.srcY, 
+						s.srcW, s.srcH, 
+						- s.destX - s.destW * s.offsetX, 
+						s.destY - s.destH * s.offsetY, 
+						s.destW * s.xscale , s.destH * s.yscale
+					);
+					ctx.restore();
+				}
 			}
 		}
 	}
@@ -225,6 +233,7 @@ function oamNode() {
 
 	this.s['dock'] = "none"; 
 
+	this.s['hide'] = "show"; 
 }
 
 // A single instance of a graphic object, used as a wrapper.
@@ -258,23 +267,21 @@ function Gob( filename ) {
 
 	// Place the position origin of the image relative to the width/height
 	this.origin = function( place ) {
-		switch( place ) {
-			case 'top':
-				oam.mod(this.gfxId, 'offsetX', 0.5);
-				oam.mod(this.gfxId, 'offsetY', 0);
-			break;
-			case 'topleft':
-				oam.mod(this.gfxId, 'offsetX', 0);
-				oam.mod(this.gfxId, 'offsetY', 0);
-			break;
-			case 'center':
-				oam.mod(this.gfxId, 'offsetX', 0.5);
-				oam.mod(this.gfxId, 'offsetY', 0.5);
-			break;
-			case 'bottom':
-				oam.mod(this.gfxId, 'offsetX', 0.5);
-				oam.mod(this.gfxId, 'offsetY', 1);
-			break;
+		oam.mod(this.gfxId, 'offsetX', 0.5);
+		oam.mod(this.gfxId, 'offsetY', 0.5);
+
+		if( place.indexOf('top') !== -1 ) {
+			oam.mod(this.gfxId, 'offsetY', 0);
+		}
+		else if( place.indexOf('bottom') !== -1 ) {
+			oam.mod(this.gfxId, 'offsetY', 1);
+		}
+
+		if( place.indexOf('left') !== -1 ) {
+			oam.mod(this.gfxId, 'offsetX', 0);
+		}
+		else if( place.indexOf('right') !== -1 ) {
+			oam.mod(this.gfxId, 'offsetX', 1);
 		}
 	}
 

@@ -29,29 +29,39 @@ function gameInit() {
 	sean.control = PLAYER_1;
 	players.push( sean );
 
-	var ad = new Player();
-	ad.gob.png( 'gfx/John - 200px Sheet.png' );
-	ad.x = 56;
-	ad.y -= 25;
-	players.push( ad );
-	
-	var dan = new Player();
-	dan.gob.png( 'gfx/John - 200px Sheet.png' );
-	dan.x = 56;
-	dan.y -= 35;
-	players.push( dan );
-	
 	var john = new Player();
 	john.gob.png( 'gfx/John - 200px Sheet.png' );
 	john.x = 56;
 	john.y -= 45;
 	players.push( john );
 	
+	//draw gui
+	gui.hp_back = new Widget("gfx/hp_back.bmp", "top left");
+	gui.hp_back.gob.imgSize(100,10);
+	gui.hp_back.gob.resize(200,20);
+
+	gui.hp = new Widget("gfx/hp.bmp", "top left");
+	gui.hp.gob.imgSize(100,10);
+	gui.hp.gob.resize(200,20);
+	gui.hp.newAct( 0,0,200,20, "press", 
+		function(relX, relY) {
+			// Touch Action: Adjust the size of the gui
+			gui.size = gui.size % 4 + 1;
+			// The touch action width and height needs to change with the size
+			gui.hp.acts[0].width = gui.size * 100;
+			gui.hp.acts[0].height = gui.size * 10;
+			// The actual graphic sizes also need to change
+			gui.hp_back.gob.resize(gui.size * 100 , gui.size * 10);
+			gui.hp.gob.resize(gui.size * players[0].hp , gui.size * 10);
+		}
+	);
+
 	// Now to setup the main game loop to run every 50milliseconds, and clear the old one
 	if( timer != null ) {
 		clearInterval(timer);
 	}
-	timer = setInterval( "mainLoop()", 30 );
+	mspf = 30;
+	timer = setInterval( "mainLoop()", mspf );
 	console.log("Main Script Completed");
 }
 
@@ -61,6 +71,11 @@ function mainLoop() {
 	for( var i = 0; i < players.length; i += 1 ) {
 		players[i].cycle();
 	}
+
+	gui.hp.cycle();
+	gui.hp_back.cycle();
+
+	gui.hp.gob.resize(gui.size * players[0].hp , gui.size * 10);
 
 	camera.x = players[0].x - camera.width / 2;
 	camera.y = players[0].y - camera.height / 2;

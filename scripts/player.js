@@ -25,6 +25,7 @@ function Player() {
 	this.x = 160;
 	this.y = 510;
 	this.spd = 8;
+	this.hp = 100;
 	this.dir = "right";
 	
 	// assume the player is an ai and not human player

@@ -1,27 +1,37 @@
 // @author: Sean Higgins
 // Players
-var sean = null;
-var john = null;
-var dan = null;
-var ad = null;
+var players = null;
 
 // our timer ID
 var timer = null;
-
-var touch = {
-	pageX: -1,
-	pageY: -1
-};
 
 // Canvas tag and it's context.
 var ctx = null;
 var canvas = null;
 
-// keyboard input
+// input devices
 var key = new Array(512);
+var touch = {
+	pageX: -1,
+	pageY: -1
+};
+var starttouch = {
+	pageX: -1,
+	pageY: -1
+};
 
 // background Graphic Object
 var bgGob = null;
+
+// milliseconds per frame
+var mspf = null;
+
+// The gui in general
+var gui = {
+	'size': 2,
+	'hp_back': null,
+	'hp': null
+}
 
 // which main menu the user is located in
 var menu = null;
