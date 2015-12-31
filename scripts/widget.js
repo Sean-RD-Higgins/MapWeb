@@ -1,6 +1,7 @@
 // @author: Sean Higgins
 
 // For now I guess this is a touchable widget intended to make the gui.
+/* ======================================================================== */
 function Widget( png, place ) {
 
 	// Variables
@@ -13,17 +14,17 @@ function Widget( png, place ) {
 		for( var i = 0; i < this.acts.length; i += 1 ) {
 			var act = this.acts[i];
 			if( act.type == "press" ) {
-				if( isStartTouchX('>',act.x) && isStartTouchX('<', act.x+act.width) && isStartTouchY('>', act.y) && isStartTouchY('<', act.y+act.height) ) {
+				if( startTouchIn(act.x, act.y, act.width, act.height) ) {
 					starttouch = {
 						'pageX': -1,
 						'pageY': -1
 					}
-					act.action(0, 0);
+					act.action();
 				}
 			}
 			else {
-				if( isTouchX('>',act.x) && isTouchX('<', act.x+act.width) && isTouchY('>', act.y) && isTouchY('<', act.y+act.height) ) {
-					act.action(0, 0);
+				if( touchIn(act.x, act.y, act.width, act.height) ) {
+					act.action();
 				}
 			}
 		}
@@ -42,6 +43,7 @@ function Widget( png, place ) {
 }
 
 // Action
+/* ======================================================================== */
 function WidgetAct() {
 
 	// The location of the touch action.
@@ -52,5 +54,5 @@ function WidgetAct() {
 
 	// This is intended to be the callback function to this action.  YOU CAN DO ANYTHING!  
 	// The arguments are the X and Y relative to the action x and y on a ratio.  Between 0.0 and 1.0
-	this.action = function(relX,relY){};
+	this.action = function(){};
 }

@@ -32,7 +32,7 @@ function OAM() {
 	
 	// Sort the array in the oam based on its z value
 	this.depthSort = function () {
-		// We want to only draw our objects in order from lowest layer [z] to highest layer.
+		// We want to only draw our objects in order from lowest layer [z] to highest layer.  Using Lamba makes this faster
 		this.m.sort(function(a,b){ return ( a['z'] <= b['z'] ) });
 	}
 
@@ -138,6 +138,7 @@ function OAM() {
 
 	// Change the current graphic based on a spritesheet's predetermined names for a frame.
 	this.gfx = function (id, gfxName) {
+		
 		// The predetermined gfx name arrangement.
 		var gfxArray = this.m[id].s['gfxArray'];
 
@@ -188,130 +189,3 @@ function OAM() {
 	console.log("OAM Script Completed");
 }
 
-// A single instance of a graphic node used only by the oam.
-function oamNode() {
-	this.s = {}; // Create a new dictionary/associative array.
-	this.s['gfx'] = new Image(); // HTML5 defined class
-
-	// The horizontal offset of the image to be used. (Not the location & length drawn on the canvas.)  An alternative to this is oam.gfx( id, predeterminedName );
-	this.s['srcX'] = 0; 
-	this.s['srcY'] = 0;
-	this.s['srcW'] = 100;
-	this.s['srcH'] = 100;
-
-	// The location (and length) of where the image is drawn onto the canvas: An offset from the origin of the canvas.
-	this.s['destX'] = 0; 
-	this.s['destY'] = 0; 
-	this.s['destW'] = 100;
-	this.s['destH'] = 100;
-
-	// The origin of the image when drawn on the screen in relation to it's width and height.
-	this.s['offsetX'] = 0.5; 
-	this.s['offsetY'] = 0.5;
-
-	// The vertical length of a single frame from a whole image.  This is not mandatory unless using predetermined graphic names.
-	this.s['spriteH'] = 100; 
-	this.s['spriteW'] = 100;
-
-	// The multiple of stretching an object.  Default of 1 indicates no stretch.  0.5 indicates squished  at half the length.  2 indicates double the length.
-	this.s['xscale'] = 1; 
-	this.s['yscale'] = 1; 
-
-	// The depth/layer at which the image will be drawn.  The Higher the number, the closer to the screen.
-	this.s['z'] = 0; 
-
-	// The assumed array with the graphic choices
-	this.s['gfxArray'] = [
-		['up1', 'up2', 'up3', 'up4', 'up5'],
-		['right1', 'right2', 'right3', 'right4', 'right5'],
-		['down1', 'down2', 'down3', 'down4', 'down5'],
-		['left1', 'left2' , 'left3', 'left4', 'left5'],
-		['alt1', 'alt2' , 'alt3', 'alt4', 'alt5']
-	];
-
-	this.s['dir'] = "right"; 
-
-	this.s['dock'] = "none"; 
-
-	this.s['hide'] = "show"; 
-}
-
-// A single instance of a graphic object, used as a wrapper.
-function Gob( filename ) {
-
-	this.gfxId = oam.newGfxId();
-	if( filename != null)
-		oam.png(this.gfxId, filename);
-
-	// Change the filename of the image to be used.
-	this.png = function ( newFilename ) {
-		oam.png(this.gfxId, newFilename);
-	}
-
-	// Change the size the source frame
-	this.srcSize = function ( w, h ) {
-		oam.mod(this.gfxId, 'srcW', w );
-		oam.mod(this.gfxId, 'srcH', h );
-	}
-
-	// Change the size of the sprite frame
-	this.spriteSize = function ( size ) {
-		oam.mod(this.gfxId, 'spriteH', size );
-		oam.mod(this.gfxId, 'spriteW', size );
-	}
-
-	// Change the destination size of the image
-	this.resize = function ( w, h ) {
-		oam.resize(this.gfxId, w, h );
-	}
-
-	// Place the position origin of the image relative to the width/height
-	this.origin = function( place ) {
-		oam.mod(this.gfxId, 'offsetX', 0.5);
-		oam.mod(this.gfxId, 'offsetY', 0.5);
-
-		if( place.indexOf('top') !== -1 ) {
-			oam.mod(this.gfxId, 'offsetY', 0);
-		}
-		else if( place.indexOf('bottom') !== -1 ) {
-			oam.mod(this.gfxId, 'offsetY', 1);
-		}
-
-		if( place.indexOf('left') !== -1 ) {
-			oam.mod(this.gfxId, 'offsetX', 0);
-		}
-		else if( place.indexOf('right') !== -1 ) {
-			oam.mod(this.gfxId, 'offsetX', 1);
-		}
-	}
-
-	// Alter the sprite graphic
-	this.gfx = function( gfx ) {
-		oam.gfx(this.gfxId, gfx);
-	}
-
-	// Change the gob's position
-	this.pos = function( x,  y ) {
-		oam.mod(this.gfxId, 'destX', x);
-		oam.mod(this.gfxId, 'destY', y);
-	}
-
-	// Change both the source and destination width/height
-	this.imgSize = function ( w , h ) {
-		this.srcSize(w, h);
-		this.resize(w, h);
-	}
-
-	this.gfxArray = function ( gfxArray ) {
-		oam.mod(this.gfxId, 'gfxArray', gfxArray);
-	}
-
-	this.dir = function ( direction ) {
-		oam.mod(this.gfxId, 'dir', direction);
-	}
-
-	this.dock = function ( place ) {
-		oam.mod(this.gfxId, 'dock', place);
-	}
-
-}
