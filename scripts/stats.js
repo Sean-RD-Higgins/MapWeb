@@ -6,5 +6,5 @@ function Stats() {
 	this.maxMp = this.mp;
 	this.sp = 30;
 	this.maxSp = this.sp;
-	this.spd = 5;
+	this.speed = 10;
 }

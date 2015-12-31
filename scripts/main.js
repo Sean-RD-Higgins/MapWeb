@@ -1,72 +1,42 @@
 // @author: Sean Higgins
 // Initialize or restart the entire game 
+/* ======================================================================== */
 console.log("Main Script Opened");
 
 document.onload = gameInit();
 
-function gameInit() {
-	
+function gameInit() 
+{
+
 	console.log("Main Script Initialized");
 
-	camera.width = getWindowSize().width;
-	camera.height = getWindowSize().height;
+	SetGlobalConfiguration();
 
-	// We draw a gray background with the context (after clearing the canvas), but the canvas stores it.
-	if( ctx == null ) {
-		canvas = document.getElementById('canvas');
-		ctx = canvas.getContext('2d');
-	}
-	
-	ctx.canvas.width = camera.width;
-	ctx.canvas.height = camera.height;
-	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-	ctx.fillStyle = "#333333";
-	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-	
-	// OAM initialization
-	oam = new OAM();
-
-	// Background Gob: Graphic Object
-	//var bgGob = oam.newGob('gfx/Shelly Tompkins - Into the Woods.jpg');
-	//bgGob.src(0, 0, 800, 600);
-
-	bgGfxId = oam.newGfxId();
-	oam.png(bgGfxId, 'gfx/Shelly Tompkins - Into the Woods.jpg');
-	oam.pos(bgGfxId, 0, 0);
-	oam.mod(bgGfxId, 'srcW', 800);
-	oam.mod(bgGfxId, 'srcH', 600);
-	oam.resize(bgGfxId, camera.width, camera.height);
-
-	// Players and their sprite sheets
-	sean = new Player();
-	oam.png(sean.gfxId, 'gfx/Sean - 200px Sheet.png');
-	oam.mod(sean.gfxId, 'spriteW', 200);
-	oam.mod(sean.gfxId, 'spriteH', 200);
-	oam.gfx(sean.gfxId, 'idle');
-	sean.control = PLAYER_1;
-
-	john = new Player();
-	oam.png(john.gfxId, 'gfx/John - 200px Sheet.png');
-	oam.mod(john.gfxId, 'spriteW', 200);
-	oam.mod(john.gfxId, 'spriteH', 200);
-	oam.gfx(john.gfxId, 'idle');
-	john.x = 560;
-	
-	// Now to setup the main game loop to run every 50milliseconds, and clear the old one
+	// Now to setup the main game loop to run every 50milliseconds, and clear the old one if it was set
 	if( timer != null ) {
 		clearInterval(timer);
 	}
-	timer = setInterval( "mainLoop()", 50 );
+	timer = setInterval( "mainLoop()", mspf );
 	console.log("Main Script Completed");
 }
 
 // This is the main game loop
-function mainLoop() {
-	sean.cycle();
-	john.cycle();
+/* ======================================================================== */
+function mainLoop() 
+{
+	// Go through all player cycles
+	for( var i = 0; i < players.length; i += 1 ) {
+		players[i].cycle();
+	}
 
-	camera.x = sean.x;
-	camera.y = sean.y;
+	gui.hp.cycle();
+	gui.hp_back.cycle();
+
+	gui.hp.gob.resize(gui.size * 100 * (players[0].stats.hp / players[0].stats.maxHp) , gui.size * 10);
+	gui.FoeHp.gob.resize(200 * (players[1].stats.hp / players[1].stats.maxHp) , 20);
+
+	camera.x = 0; //players[0].x - camera.width / 2;
+	camera.y = 0; //players[0].y - camera.height / 2;
 
 	oam.draw();
 }

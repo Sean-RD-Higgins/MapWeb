@@ -1,5 +1,7 @@
 // @author: Sean Higgins
 
+
+
 // Returns an Associative Array containing 'width' and 'height' of the window.
 function getWindowSize() {
 	//@author: http://www.javascripter.net/faq/browserw.htm
@@ -19,4 +21,11 @@ function getWindowSize() {
 	 winH = window.innerHeight;
 	}
 	return {'width': winW, 'height': winH};
+}
+
+window.onresize = function () {
+	camera.width = getWindowSize().width;
+	camera.height = getWindowSize().height;
+	ctx.canvas.width = camera.width;
+	ctx.canvas.height = camera.height;
 }

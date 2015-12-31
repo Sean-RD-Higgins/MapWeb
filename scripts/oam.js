@@ -4,9 +4,13 @@ This "class" imitates the concept of the Object Attiribute Manager used to contr
 */
 // @author: Sean Higgins
 
+console.log("OAM Script Opened");
+
+var oam = new OAM();
 
 // The "Class" head function.
 function OAM() {
+	console.log("OAM Initialized");
 
 	// Assume the context of the canvas.
 
@@ -28,7 +32,7 @@ function OAM() {
 	
 	// Sort the array in the oam based on its z value
 	this.depthSort = function () {
-		// We want to only draw our objects in order from lowest layer [z] to highest layer.
+		// We want to only draw our objects in order from lowest layer [z] to highest layer.  Using Lamba makes this faster
 		this.m.sort(function(a,b){ return ( a['z'] <= b['z'] ) });
 	}
 
@@ -70,25 +74,73 @@ function OAM() {
 		
 		//  The array is sorted by which depth it is to be drawn in ascending order.  Therefore, we can jsut draw from index 0 to the max length.
 		for( i = 0; i < this.m.length; i += 1) {
-			ctx.drawImage( 
-				(this.m[i]).s['gfx'], 
-				(this.m[i]).s['srcX'], (this.m[i]).s['srcY'], 
-				(this.m[i]).s['srcW'], (this.m[i]).s['srcH'], 
-				(this.m[i]).s['destX'], (this.m[i]).s['destY'], 
-				(this.m[i]).s['destW'], (this.m[i]).s['destH'] );
+
+			// I simply hate having to write long names for huge functions....
+			// This is programming after all.  We are supposed to make source easier for the author.
+			var s = this.m[i].s;
+
+			// Do not waste cycles on drawing hidden objects
+			if( s.hide == "show" ){
+
+				// If the graphic is docked, give it special conditions
+				if( s.dock != 'none' ) {
+
+					s.offsetX = 0.5;
+					s.offsetY = 0.5;
+					s.destX = camera.x + camera.width / 2;
+					s.destY = camera.y + camera.height / 2;
+					if( s.dock.indexOf('top') !== -1 ) {
+						s.destY = camera.y;
+						s.offsetY = 0;
+					}
+					else if( s.dock.indexOf('bottom') !== -1 ) {
+						s.destY = camera.y + camera.height;
+						s.offsetY = 1;
+					}
+					if( s.dock.indexOf('left') !== -1 ) {
+						s.destX = camera.x;
+						s.offsetX = 0;
+					}
+					else if( s.dock.indexOf('right') !== -1 ) {
+						s.destX = camera.x + camera.width;
+						s.offsetX = 1;
+					}
+				}
+
+				// IF the graphic wishes to be reversed, perform a coordinate swap to display the image in reverse
+				if ( s.dir == 'right' ) { 
+					ctx.drawImage( 
+						s.gfx, 
+						s.srcX, s.srcY, 
+						s.srcW, s.srcH, 
+						s.destX - s.destW * s.offsetX, 
+						s.destY - s.destH * s.offsetY, 
+						s.destW * s.xscale , s.destH * s.yscale
+					);
+				}
+				else {
+					// To Revert the scale inline, simply save the context and revert it when done.
+					ctx.save();
+					ctx.scale(-1, 1);
+					ctx.drawImage( 
+						s.gfx, 
+						s.srcX, s.srcY, 
+						s.srcW, s.srcH, 
+						- s.destX - s.destW * s.offsetX, 
+						s.destY - s.destH * s.offsetY, 
+						s.destW * s.xscale , s.destH * s.yscale
+					);
+					ctx.restore();
+				}
+			}
 		}
 	}
 
 	// Change the current graphic based on a spritesheet's predetermined names for a frame.
 	this.gfx = function (id, gfxName) {
+		
 		// The predetermined gfx name arrangement.
-		var gfxArray = [
-			['up1', 'up2', 'up3', 'up4', 'up5'],
-			['right1', 'right2', 'right3', 'right4', 'right5'],
-			['down1', 'down2', 'down3', 'down4', 'down5'],
-			['left1', 'left2' , 'left3', 'left4', 'left5'],
-			['alt1', 'alt2' , 'alt3', 'alt4', 'alt5']
-		];
+		var gfxArray = this.m[id].s['gfxArray'];
 
 		// Search through the 2D array for the name of the frame.
 		this.x = 0;
@@ -96,8 +148,8 @@ function OAM() {
 		for( i = 0 ; i < gfxArray.length; i += 1 ) {
 			for( j = 0 ; j < gfxArray[i].length ; j += 1 ) {
 				if( gfxName == gfxArray[i][j] ) {
-					this.x = i;
-					this.y = j;
+					this.x = j;
+					this.y = i;
 				}
 			}
 		}
@@ -109,18 +161,6 @@ function OAM() {
 		this.m[id].s['srcH'] = this.m[id].s['spriteH'];
 		this.m[id].s['destW'] = this.m[id].s['srcW'];
 		this.m[id].s['destH'] = this.m[id].s['srcH'];
-	}
-
-	// Change the direction of the gfx face
-	this.face = function (id, dir) {
-		if( dir == "Right" ) {
-			this.m[id].s['xscale'] = 1;
-		}
-		else {
-			this.m[id].s['xscale'] = -1;
-		}
-		this.m[id].s['srcW'] = this.s['spriteW'] * this.s['xscale'];
-		this.m[id].s['srcH'] = this.s['spriteH'] * this.s['yscale'];
 	}
 
 	// Source sold separately
@@ -146,33 +186,6 @@ function OAM() {
 		this.m[id].s['srcH'] = h;
 	}
 
+	console.log("OAM Script Completed");
 }
 
-// A single instance of a graphic node.
-function oamNode() {
-	this.s = {}; // Create a new dictionary/associative array.
-	this.s['gfx'] = new Image(); // HTML5 defined class
-
-	// The horizontal offset of the image to be used. (Not the location & length drawn on the canvas.)  An alternative to this is oam.gfx( id, predeterminedName );
-	this.s['srcX'] = 0; 
-	this.s['srcY'] = 0;
-	this.s['srcW'] = 100;
-	this.s['srcH'] = 100;
-
-	// The location (and length) of where the image is drawn onto the canvas: An offset from the origin of the canvas.
-	this.s['destX'] = 0; 
-	this.s['destY'] = 0; 
-	this.s['destW'] = 100;
-	this.s['destH'] = 100;
-
-	// The vertical length of a single frame from a whole image.  This is not mandatory unless using predetermined graphic names.
-	this.s['spriteH'] = 100; 
-	this.s['spriteW'] = 100;
-
-	// The multiple of stretching an object.  Default of 1 indicates no stretch.  0.5 indicates squished  at half the length.  2 indicates double the length.
-	this.s['xscale'] = 1; 
-	this.s['yscale'] = 1; 
-
-	// The depth/layer at which the image will be drawn.  The Higher the number, the closer to the screen.
-	this.s['z'] = 0; 
-}
