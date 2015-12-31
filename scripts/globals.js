@@ -182,6 +182,6 @@ function SetGlobalConfiguration()
 	gui.FoeHp.gob.imgSize(100,10);
 	gui.FoeHp.gob.resize(200,20);
 	gui.FoeHp.newAct( 0,0,200,20);
-	mspf = 40;
+	mspf = 17;
 
 }

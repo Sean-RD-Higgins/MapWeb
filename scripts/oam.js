@@ -15,7 +15,7 @@ function OAM() {
 	// Assume the context of the canvas.
 
 	// The manager itself.  This is the OAM's main source of storage.  A basic array of objects.
-	this.m = new Array(); 
+	this.manager = new Array(); 
 	
 	// Methods
 	// Modify a single property of your graphic
@@ -27,30 +27,30 @@ function OAM() {
 		}
 
 		// Modify the property of the image node
-		(this.m[ id ]).s[ prop ] = data;
+		(this.manager[ id ]).s[ prop ] = data;
 	}
 	
 	// Sort the array in the oam based on its z value
 	this.depthSort = function () {
 		// We want to only draw our objects in order from lowest layer [z] to highest layer.  Using Lamba makes this faster
-		this.m.sort(function(a,b){ return ( a['z'] <= b['z'] ) });
+		this.manager.sort(function(a,b){ return ( a['z'] <= b['z'] ) });
 	}
 
 	// Returns your unique GFX ID to be used for modification
 	this.newGfxId = function () {
 		// Add the node
-		this.m.push( new oamNode() );
+		this.manager.push( new oamNode() );
 
 		// Sort the array with the new
 		this.depthSort();
 
 		//Return the gfx Id.
-		return this.m.length - 1;
+		return this.manager.length - 1;
 	}
 	
 	// Returns the current quantity of active graphics
 	this.count = function () {
-		return this.m.length;
+		return this.manager.length;
 	}
 	
 	// Redraw all graphics onto the canvas.
@@ -68,16 +68,16 @@ function OAM() {
  		ctx.translate( -camera.x, -camera.y );
 
 		// Nothing to draw?  Then there's no reason to waste additional cycles.
-		if( this.m.length == 0 ) {
+		if( this.manager.length == 0 ) {
 			return;
 		}
 		
 		//  The array is sorted by which depth it is to be drawn in ascending order.  Therefore, we can jsut draw from index 0 to the max length.
-		for( i = 0; i < this.m.length; i += 1) {
+		for( i = 0; i < this.manager.length; i += 1) {
 
 			// I simply hate having to write long names for huge functions....
 			// This is programming after all.  We are supposed to make source easier for the author.
-			var s = this.m[i].s;
+			var s = this.manager[i].s;
 
 			// Do not waste cycles on drawing hidden objects
 			if( s.hide == "show" ){
@@ -140,7 +140,7 @@ function OAM() {
 	this.gfx = function (id, gfxName) {
 		
 		// The predetermined gfx name arrangement.
-		var gfxArray = this.m[id].s['gfxArray'];
+		var gfxArray = this.manager[id].s['gfxArray'];
 
 		// Search through the 2D array for the name of the frame.
 		this.x = 0;
@@ -155,35 +155,35 @@ function OAM() {
 		}
 
 		// Since the user is requesting a specific GFX Name, assume they are using the spritesheet convention.
-		this.m[id].s['srcX'] = this.x * this.m[id].s['spriteW'];
-		this.m[id].s['srcY'] = this.y * this.m[id].s['spriteH'];
-		this.m[id].s['srcW'] = this.m[id].s['spriteW'];
-		this.m[id].s['srcH'] = this.m[id].s['spriteH'];
-		this.m[id].s['destW'] = this.m[id].s['srcW'];
-		this.m[id].s['destH'] = this.m[id].s['srcH'];
+		this.manager[id].s['srcX'] = this.x * this.manager[id].s['spriteW'];
+		this.manager[id].s['srcY'] = this.y * this.manager[id].s['spriteH'];
+		this.manager[id].s['srcW'] = this.manager[id].s['spriteW'];
+		this.manager[id].s['srcH'] = this.manager[id].s['spriteH'];
+		this.manager[id].s['destW'] = this.manager[id].s['srcW'];
+		this.manager[id].s['destH'] = this.manager[id].s['srcH'];
 	}
 
 	// Source sold separately
 	this.png = function (id, filename) {
-		this.m[id].s['gfx'].src = filename;
+		this.manager[id].s['gfx'].src = filename;
 	}
 
 	// Change the object's screen position
 	this.pos = function (id, x, y) {
-		this.m[id].s['destX'] = x;
-		this.m[id].s['destY'] = y;
+		this.manager[id].s['destX'] = x;
+		this.manager[id].s['destY'] = y;
 	}
 
 	// Change the object's size on the screen and on the spritesheet.
 	this.resize = function (id, w, h) {
-		this.m[id].s['destW'] = w;
-		this.m[id].s['destH'] = h;
+		this.manager[id].s['destW'] = w;
+		this.manager[id].s['destH'] = h;
 	}
 
 	// Change the source frame that the image is taken from
 	this.reframe = function (id, w, h) {
-		this.m[id].s['srcW'] = w;
-		this.m[id].s['srcH'] = h;
+		this.manager[id].s['srcW'] = w;
+		this.manager[id].s['srcH'] = h;
 	}
 
 	console.log("OAM Script Completed");
